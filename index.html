@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Choropleth Tutorial</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body {
+  margin: 0;
+  padding: 0;
+}
+
+h2,
+h3 {
+  margin: 10px;
+  font-size: 1.2em;
+}
+
+h3 {
+  font-size: 1em;
+}
+
+p {
+  font-size: 0.85em;
+  margin: 10px;
+  text-align: left;
+}
+
+/**
+* Create a position for the map
+* on the page */
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/**
+* Set rules for how the map overlays
+* (information box and legend) will be displayed
+* on the page. */
+.map-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  margin-right: 20px;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+  border-radius: 3px;
+}
+
+#features {
+  top: 0;
+  height: 85px;
+  margin-top: 20px;
+  width: 250px;
+}
+
+
+
+</style>
+</head>
+<body>
+<div id="map"></div>
+    <div class='map-overlay' id='features'><h2>Active COVID-19 Cases within US</h2></div>
+<div class='map-overlay' id='legend'></div>
+<script>
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoibW9uY3Jvc2J5eCIsImEiOiJjazN1bGFpZTQwMjdrM2tydnF6c28xZzFvIn0.01Mdk6HrNUWoBWn3wL8k7A';
+        
+        
+    var map = new mapboxgl.Map({
+  container: 'map', // container id
+
+  style: 'mapbox://styles/moncrosbyx/ck9k9an7q0miz1ipn4jqguosf' // replace this with your style URL
+});
+
+ 
+ map.on('click', function(e) {
+        var features = map.queryRenderedFeatures(e.point, {
+        layers: ['covid19-cases-us-1-5baxg2'] 
+         });
+
+        if (!features.length) {
+        return;
+          }
+
+        var feature = features[0];
+
+        var popup = new mapboxgl.Popup({ offset: [0, -7] })
+        .setLngLat(feature.geometry.coordinates)
+        .setHTML('<h3>' + feature.properties.Province_S + '</h3><p>' + "Number Active: " + feature.properties.Active + '</p>' )
+        .addTo(map);
+        });
+
+        map.on('mouseenter', 'test', function() {
+        map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'test', function() {
+        map.getCanvas().style.cursor = '';
+        });
+        
+    
+        
+/*for (i = 0; i < layers.length; i++) {
+  var layer = layers[i];
+  var color = colors[i];
+  var item = document.createElement('div');
+  var key = document.createElement('span');
+  key.className = 'legend-key';
+  key.style.backgroundColor = color;
+
+  var value = document.createElement('span');
+  value.innerHTML = layer;
+  item.appendChild(key);
+  item.appendChild(value);
+  legend.appendChild(item);
+}
+
+
+        
+*/
+        
+map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
+
+    
+
+
+        
+      </script>
